@@ -21,8 +21,8 @@ public class Building {
     }
 
     private void initializeElevators() {
-        for (int i = 0; i < _simulationSettings.number_of_elevators; i++) {
-            String passengerType = _simulationSettings.add_passenger.get(i).passengerType; // Get passenger type for the elevator
+        for (int i = 0; i < _simulationSettings.number_of_elevators && i < _simulationSettings.add_passenger.size(); i++) {
+            String passengerType = _simulationSettings.add_passenger.get(i).passengerType;
             elevators.add(createElevator(passengerType));
         }
     }

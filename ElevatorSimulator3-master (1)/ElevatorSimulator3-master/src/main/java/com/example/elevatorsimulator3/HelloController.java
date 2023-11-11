@@ -10,7 +10,7 @@ public class HelloController {
     @FXML
     protected void onHelloButtonClick() {
         ElevatorSimulation _simulation = new ElevatorSimulation();
-        _simulation.initSimulation("ElevatorSimulationInfo");
+        _simulation.initSimulation();
         //
     }
 }

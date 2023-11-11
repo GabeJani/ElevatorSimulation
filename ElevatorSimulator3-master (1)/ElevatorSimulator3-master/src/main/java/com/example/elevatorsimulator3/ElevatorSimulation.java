@@ -1,7 +1,5 @@
 package com.example.elevatorsimulator3;
 
-import javafx.beans.property.SimpleMapProperty;
-
 import java.io.*;
 import java.io.FileReader;
 
@@ -9,17 +7,73 @@ public class ElevatorSimulation {
     SimulationSettings _simulationSettings = new SimulationSettings();
     private Building building;
 
-    public boolean initSimulation(String ElevatorSimulationInfo) {
-        _simulationSettings = readSettingsContent(ElevatorSimulationInfo); // replace filename
+    public boolean initSimulation() {
+        String fileName = "ElevatorSimulatorInfo.txt";
+        _simulationSettings = readSettingsContent();
         building = new Building(_simulationSettings);
         runSimulation(_simulationSettings);
         return true;
     }
 
-    private SimulationSettings readSettingsContent(String fileName) {
+    private SimulationSettings readSettingsContent() {
+        String filePath = "C:\\Users\\Gabe\\Downloads\\ElevatorSimulator3-master (1)\\ElevatorSimulator3-master\\ElevatorSimulatorInfo.txt";
+        File file = new File(filePath);
+        System.out.println("Absolute Path: " + file.getAbsolutePath());
+
         SimulationSettings currentSettings = new SimulationSettings();
-        // Read Information from file and populate the currentSettings
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                parseLine(line, currentSettings);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return currentSettings;
+    }
+
+
+
+    private void parseLine(String line, SimulationSettings currentSettings) {
+        String[] tokens = line.split("\\s+");
+
+        if (tokens.length > 0) {
+            String command = tokens[0];
+
+            switch (command) {
+                case "floors":
+                    currentSettings.floors = Integer.parseInt(tokens[1]);
+                    break;
+                case "add_passenger":
+                    int floor = Integer.parseInt(tokens[1]);
+                    int startFloor = Integer.parseInt(tokens[2]);
+                    int endFloor = Integer.parseInt(tokens[3]);
+                    String passengerType = tokens[4];
+                    int quantity = Integer.parseInt(tokens[5]);
+                    currentSettings.addPassenger(floor, startFloor, endFloor, passengerType, quantity);
+                    break;
+                case "elevator_type":
+                    // handle elevator type command
+                    break;
+                case "request_percentage":
+                    // handle request percentage command
+                    break;
+                case "passenger_request_percentage":
+                    // handle passenger request percentage command
+                    break;
+                case "number_of_elevators":
+                    currentSettings.number_of_elevators = Integer.parseInt(tokens[1]);
+                    break;
+                case "run_simulation":
+                    currentSettings.run_simulation = Integer.parseInt(tokens[1]);
+                    break;
+                default:
+                    // handle unrecognized command
+                    break;
+            }
+        }
     }
 
     private boolean runSimulation(SimulationSettings simulationSettings) {
@@ -28,6 +82,7 @@ public class ElevatorSimulation {
         for (int i = 0; i < iterations; i++) {
             simulateElevatorMovement();
             simulatePassengerActions();
+            System.out.println("Simulation iteration: " +(i+1));
         }
 
         return true;
@@ -72,6 +127,7 @@ public class ElevatorSimulation {
 
             // Called move method with the determined direction
             elevator.move(elevatorDirection);
+            System.out.println("Simulating elevator movement...");
         }
     }
 
@@ -88,6 +144,7 @@ public class ElevatorSimulation {
                     if (requestedElevator != null) {
                         requestedElevator.addPassenger(passenger);
                         floor.removeFromWaitQueue(passenger);
+                        System.out.println("Simulating passenger actions....");
                     }
                 }
             }
@@ -107,10 +164,11 @@ public class ElevatorSimulation {
             return direction.IDLE;
         }
     }
-    public static void main(String[] args) {
+}
+   /* public static void main(String[] args) {
 
         try {
-            FileReader reader = new FileReader("elevatorInput.txt");
+            FileReader reader = new FileReader("elevdsf");
             int data = reader.read();
             while(data != -1){
                 System.out.print((char)data);
@@ -127,4 +185,5 @@ public class ElevatorSimulation {
 
 
     }
-}
+
+    */
